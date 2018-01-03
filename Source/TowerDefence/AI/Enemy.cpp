@@ -20,6 +20,7 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	m_nCurrentHealth = m_nMaxHealth;
 }
 
 // Called every frame
@@ -48,3 +49,26 @@ void AEnemy::loadPath(TArray<FVector> aPath)
 	m_aPath = TArray<FVector>(aPath);
 }
 
+void AEnemy::dealDamage(float nDamage)
+{
+	m_nCurrentHealth -= nDamage;
+
+	if (m_nCurrentHealth > 0)
+		return;
+
+	destroyEnemy();
+}
+
+void AEnemy::destroyEnemy()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, TEXT("Enemy destroyed"));
+	m_bDead = true;
+	Destroy();
+}
+
+void AEnemy::Destroyed()
+{
+	Super::Destroyed();
+
+	m_aPath.Empty();
+}

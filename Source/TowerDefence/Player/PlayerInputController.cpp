@@ -2,6 +2,12 @@
 
 #include "PlayerInputController.h"
 
+void APlayerInputController::BeginPlay()
+{
+	Super::BeginPlay();
+	SetInputMode(FInputModeGameAndUI());
+}
+
 // Called to bind functionality to input
 void APlayerInputController::SetupInputComponent()
 {
@@ -16,27 +22,22 @@ void APlayerInputController::onLeftClick()
 {
 	if (m_pCurrentTower != nullptr)
 	{
+		m_pCurrentTower->init();
 		m_pCurrentTower = nullptr;
 		return;
 	}
-
-	//Create tower object
-	GEngine->AddOnScreenDebugMessage(-1, 1.0f, FColor::Red, FString("Spawning tower"));
-
-	AActor* pTowerActor = GetWorld()->SpawnActor(m_pTowerType);
-	m_pCurrentTower = Cast<ATower>(pTowerActor);
 }
 
 void APlayerInputController::Tick(float DeltaTime)
 {
-	if (m_pCurrentTower == nullptr)
-		return;
+	Super::Tick(DeltaTime);
 
+}
+
+FHitResult APlayerInputController::GetFloorHitUnderCursor()
+{
 	FHitResult pHitResult = FHitResult();
 	GetHitResultUnderCursor(ECollisionChannel::ECC_GameTraceChannel1, false, pHitResult);
 
-	if (pHitResult.Actor == nullptr)
-		return;
-
-	m_pCurrentTower->SetActorLocation(pHitResult.ImpactPoint);
+	return pHitResult;
 }

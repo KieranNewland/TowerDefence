@@ -22,8 +22,14 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void Destroyed() override;
+
+	UPROPERTY(EditDefaultsOnly)
+	float m_nMaxHealth = 1;
 
 	void loadPath(TArray<FVector> aPath);
+	void dealDamage(float nDamage);
+	bool isDead() { return m_bDead; }
 
 private:
 	UPROPERTY(EditDefaultsOnly)
@@ -32,4 +38,7 @@ private:
 	TArray<FVector> m_aPath;
 	uint8 m_nCurrentPathIndex;
 	
+	float m_nCurrentHealth;
+	bool m_bDead;
+	void destroyEnemy();
 };

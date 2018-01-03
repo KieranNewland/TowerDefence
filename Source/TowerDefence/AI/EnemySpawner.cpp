@@ -62,5 +62,13 @@ void AEnemySpawner::spawnEnemy()
 
 AEnemy* AEnemySpawner::getBestEnemy()
 {
-	return m_aEnemies[0];
+	for (AEnemy* pEnemy : m_aEnemies)
+	{
+		if (pEnemy == nullptr || pEnemy->isDead())
+			continue;
+
+		return pEnemy;
+	}
+
+	return nullptr;
 }

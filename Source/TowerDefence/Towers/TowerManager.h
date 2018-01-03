@@ -2,39 +2,40 @@
 
 #pragma once
 
-#include "Engine.h"
-#include "./AI/EnemySpawner.h"
-#include "TowerProjectile.h"
+#include "CoreMinimal.h"
+#include "Tower.h"
 #include "GameFramework/Actor.h"
-#include "Tower.generated.h"
+#include "TowerManager.generated.h"
 
 UCLASS()
-class TOWERDEFENCE_API ATower : public AActor
+class TOWERDEFENCE_API ATowerManager : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
-	ATower();
+	ATowerManager();
 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	UFUNCTION(BlueprintCallable, Category = "Tower UI")
+		void CreateTower(TSubclassOf<ATower> pTowerType);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(EditDefaultsOnly)
-		TSubclassOf<ATowerProjectile> m_pProjectile;
-
-	void init();
-
 private:
-	AEnemySpawner* m_pSpawner;
-	float m_nTimeToShoot;
-	bool m_nbPickedUp = true;;
-	bool m_bActive;
+	UPROPERTY()
+	TArray<ATower*> m_aTowers;
 
-	void shoot();
+	UPROPERTY()
+	ATower* m_pCurrentTower;
+
+	UFUNCTION()
+		void UpdateTowerUnderCursor();
+	
+	
 };

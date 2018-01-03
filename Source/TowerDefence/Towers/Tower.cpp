@@ -16,7 +16,9 @@ void ATower::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	m_pSpawner = Cast<ATowerDefenceGameModeBase>(GetWorld()->GetAuthGameMode())->getSpawner();
+	ATowerDefenceGameModeBase* pBaseMode = Cast<ATowerDefenceGameModeBase>(GetWorld()->GetAuthGameMode());
+	m_pSpawner = pBaseMode->getSpawner();
+
 	m_nTimeToShoot = 1;
 }
 
@@ -24,6 +26,9 @@ void ATower::BeginPlay()
 void ATower::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (m_nbPickedUp)
+		return;
 
 	m_nTimeToShoot -= DeltaTime;
 
@@ -33,9 +38,21 @@ void ATower::Tick(float DeltaTime)
 	shoot();
 }
 
+void ATower::init()
+{
+	m_nbPickedUp = false;
+}
+
 void ATower::shoot()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.5f, FColor::Red, TEXT("Shooting " + m_pSpawner->getBestEnemy()->GetName()));
+	AEnemy* pChosenEnemy = m_pSpawner->getBestEnemy();
+
+	if (pChosenEnemy == nullptr)
+		return;
+
+	FVector pOurPosition = GetActorLocation();
+	AActor* pProjectileActor = GetWorld()->SpawnActor(m_pProjectile, &pOurPosition, &FRotator::ZeroRotator);
+	Cast<ATowerProjectile>(pProjectileActor)->setTarget(pChosenEnemy);
 
 	m_nTimeToShoot = 1;
 }

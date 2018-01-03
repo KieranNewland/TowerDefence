@@ -16,8 +16,12 @@ class TOWERDEFENCE_API APlayerInputController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	virtual void BeginPlay() override;
+
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<ATower> m_pTowerType;
+
+	FHitResult GetFloorHitUnderCursor();
 	
 protected:
 	virtual void SetupInputComponent() override;
